@@ -210,10 +210,6 @@ $("#ProblemsUploadTemplate").click(function(){
       var actionT = response4.action;
       document.getElementById("p15").innerHTML = response4.templateId;
       document.getElementById("p21").innerHTML = actionT;
-
-      var test1 = false;
-      var test2 = false;
-      var test3 = true;
       var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>action is commit</td>";    
       var tablecontent2 = "</tr><tr><td>template ID exists</td>";
       var tablecontent3="</tr><tr><td>templateId is not empty</td>";
@@ -314,8 +310,50 @@ $("#ProblemsReadComposition").click(function(){
         "cache-control": "no-cache"
       }
     }
-
     $.ajax(settings6).done(function (response6) {
+    	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Composition Set of Information is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>TemplateID is included in the Data</td>";
+	    var tablecontent3="</tr><tr><td>Composition uid is in the Response</td>";
+	    var tablecontent4="</tr><tr><td>CompositionID remains the same</td>";
+	    var tablecontent5="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+		if (response6.hasOwnProperty('composition')) {
+        	test1 = true;
+      	}
+      	if (response6.hasOwnProperty('templateId')) {
+        	test2 = true;
+      	}
+      	if(response6.composition.hasOwnProperty('problem_list/_uid')){
+      		test3=true;
+      	}
+      	if(compositionUid==response6.composition['problem_list/_uid']){
+      		test4=true;
+    	}
+    	var table;
+	    if(test1){
+	      table = tablecontent1.concat(lineSuccess);
+	    }else{
+	      table = tablecontent1.concat(lineFailure);
+	    }
+	    if(test2){
+	        table = table.concat(tablecontent2, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent2, lineFailure);
+	    }
+	    if(test3){
+	        table = table.concat(tablecontent3, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent3, lineFailure);
+	    }
+	    if(test4){
+	    	table = table.concat(tablecontent4, lineSuccess, tablecontent5);
+	    }else{
+	    	table = table.concat(tablecontent4, lineFailure, tablecontent5);
+	    }
+      document.getElementById("ProblemsReadCompositionTests").innerHTML = table;
       console.log(response6);
       var res = response6.composition;
       var res2 = res['problem_list/_uid'];
@@ -341,14 +379,49 @@ $("#ProblemsDeleteComposition").click(function(){
       }
 
     $.ajax(settings7).done(function (response7) {
-      console.log(response7);
-      var res = response7.compositionUid;
-      compositionUid = res; 
-      var actionT = response7.action;
-      document.getElementById("p29").innerHTML = compositionUid;
-      document.getElementById("p31").innerHTML = actionT;    
+    	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Composition ID exists in the response</td>";    
+	    var tablecontent2 = "</tr><tr><td>Action is Delete</td>";
+	    var tablecontent3="</tr><tr><td>CompositionID remains the same</td>";
+	    var tablecontent4="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var table;
+		if (response7.hasOwnProperty('compositionUid')) {
+        	test1 = true;
+      	}
+	    if(response7.action === 'DELETED'){
+	        test2=true;
+      	}
+      	if(compositionUid==response7.compositionUid){
+      		test3=true;
+    	}
+    	if(test1){
+	      table = tablecontent1.concat(lineSuccess);
+	    }else{
+	      table = tablecontent1.concat(lineFailure);
+	    }
+	    if(test2){
+	        table = table.concat(tablecontent2, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent2, lineFailure);
+	    }
+	    if(test3){
+	        table = table.concat(tablecontent3, lineSuccess, tablecontent4);
+	    }else{
+	        table = table.concat(tablecontent3, lineFailure, tablecontent4);
+	    }
+	    document.getElementById("ProblemsDeleteCompositionTests").innerHTML = table;
+	      console.log(response7);
+	      var res = response7.compositionUid;
+	      compositionUid = res; 
+	      var actionT = response7.action;
+	      document.getElementById("p29").innerHTML = compositionUid;
+	      document.getElementById("p31").innerHTML = actionT;    
     });
 });
+
+
 
 $("#ProblemsQueryPatientCompositions").click(function(){
     var query = "{\n    \"aql\": \"select   a/uid/value as uid,   a/composer/name as author,   a/context/start_time/value as date_created,   b_a/data[at0001]/items[at0002]/value/value as problem,    b_a/data[at0001]/items[at0002]/value/defining_code/code_string as problem_code,    b_a/data[at0001]/items[at0002]/value/defining_code/terminology_id/value as problem_terminology,    b_a/data[at0001]/items[at0009]/value/value as description,    b_a/data[at0001]/items[at0077]/value/value as onset_date  from EHR e [ehr_id/value = '";
@@ -370,10 +443,66 @@ $("#ProblemsQueryPatientCompositions").click(function(){
     }
 
     $.ajax(settings8).done(function (response8) {
+       	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Result Set is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>The resultSet contains compositions for this EHR ID</td>";
+	    var tablecontent3="</tr><tr><td>All compositions in result Set contain uid and author/patient Name</td>";
+	    var tablecontent4="</tr><tr><td>The uid and author/patient Name of all the compositions are not null</td>";
+	    var tablecontent5="</tr><tr><td>The resultSet is empty</td>";	    
+	    var tablecontent6="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+	    var test5=false;
+	    var table;
+		if (response8.hasOwnProperty('resultSet')) {
+        	test1 = true;
+        	table = tablecontent1.concat(lineSuccess);
+      	}else{
+      		table = tablecontent1.concat(lineFailure);
+      	}
+      	if (test1){
+			var le = Object.keys(response8.resultSet).length;
+			if(le>0){
+				test2 = true;
+				table = table.concat(tablecontent2, lineSuccess);
+				var i=0;
+			    var checkAll = true;
+			    var nullVars = true;
+			    while(i<le){
+			        var obj = response8.resultSet[i];
+			        if((!(obj.hasOwnProperty('uid')))||(!(obj.hasOwnProperty('author')))){
+			            checkAll = false;    
+			        }else{
+			            if ((obj.uid == null)||(obj.author==null)){
+			                nullVars = false;
+			            }
+			        }
+			        i++;
+			    }
+			    if(checkAll){
+			    	test3=true;
+			    	table = table.concat(tablecontent3, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent3, lineFailure);
+			    }
+			    if(nullVars){
+			    	test4=true;
+			    	table = table.concat(tablecontent4, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent4, lineFailure);			    	
+			    }
+
+			}else{
+				test5=true;
+				table = table.concat(tablecontent5, lineSuccess);
+			}
+			      document.getElementById("p34").innerHTML = le;
+		}
+		table = table.concat(tablecontent6);
+		document.getElementById("ProblemsQueryPatientCompositionsTests").innerHTML = table;
       console.log(response8);
-      var res = response8.resultSet[0].uid;
       var patientName = response8.resultSet[0].author;
-      document.getElementById("p34").innerHTML = res;
       document.getElementById("p36").innerHTML = patientName;
 
     });
@@ -398,11 +527,65 @@ $("#ProblemsQueryAllCompositions").click(function(){
     }
 
     $.ajax(settings9).done(function (response9) {
-      console.log(response9);
-      var res = response9.resultSet[0].uid;
-      var patientName = response9.resultSet[0].author;
-      document.getElementById("p39").innerHTML = res;
-      document.getElementById("p41").innerHTML = patientName;
+    	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Result Set is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>The resultSet contains compositions for this EHR ID</td>";
+	    var tablecontent3="</tr><tr><td>All compositions in result Set contain uid and author/patient Name</td>";
+	    var tablecontent4="</tr><tr><td>The uid and author/patient Name of all the compositions are not null</td>";
+	    var tablecontent5="</tr><tr><td>The resultSet is empty</td>";	    
+	    var tablecontent6="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+	    var test5=false;
+	    var table;
+		if (response9.hasOwnProperty('resultSet')) {
+        	test1 = true;
+        	table = tablecontent1.concat(lineSuccess);
+      	}else{
+      		table = tablecontent1.concat(lineFailure);
+      	}
+      	if (test1){
+			var le = Object.keys(response9.resultSet).length;
+			if(le>0){
+				test2 = true;
+				table = table.concat(tablecontent2, lineSuccess);
+				var i=0;
+			    var checkAll = true;
+			    var nullVars = true;
+			    while(i<le){
+			        var obj = response9.resultSet[i];
+			        if((!(obj.hasOwnProperty('uid')))||(!(obj.hasOwnProperty('author')))){
+			            checkAll = false;    
+			        }else{
+			            if ((obj.uid == null)||(obj.author==null)){
+			                nullVars = false;
+			            }
+			        }
+			        i++;
+			    }
+			    if(checkAll){
+			    	test3=true;
+			    	table = table.concat(tablecontent3, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent3, lineFailure);
+			    }
+			    if(nullVars){
+			    	test4=true;
+			    	table = table.concat(tablecontent4, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent4, lineFailure);			    	
+			    }
+
+			}else{
+				test5=true;
+				table = table.concat(tablecontent5, lineSuccess);
+			}
+			      document.getElementById("p39").innerHTML = le;
+		}
+		table = table.concat(tablecontent6);
+		document.getElementById("ProblemsQueryAllCompositionsTests").innerHTML = table;
+      	console.log(response9);
 
     });
 });
@@ -430,6 +613,40 @@ $("#AllergiesUploadTemplate").click(function(){
       var actionT = response10.action;
       document.getElementById("p44").innerHTML = response10.templateId;
       document.getElementById("p46").innerHTML = actionT;
+      var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>action is commit</td>";    
+      var tablecontent2 = "</tr><tr><td>template ID exists</td>";
+      var tablecontent3="</tr><tr><td>templateId is not empty</td>";
+      var tablecontent4="</tr></tbody></table>";
+      var test1=false; 
+      var test2=false;
+      var test3=true;
+      if(response10.action === 'CREATE'){
+        test1=true;
+      }
+      if (response10.hasOwnProperty('templateId')) {
+        test2 = true;
+      }
+      if(!response10.templateId){
+        test3 = false;
+      }
+      var table;
+      if(test1){
+        table = tablecontent1.concat(lineSuccess);
+      }else{
+        table = tablecontent1.concat(lineFailure);
+      }
+      if(test2){
+          table = table.concat(tablecontent2, lineSuccess);
+      }else{
+          table = table.concat(tablecontent2, lineFailure);
+      }
+      if(test3){
+          table = table.concat(tablecontent3, lineSuccess, tablecontent4);
+      }else{
+          table = table.concat(tablecontent3, lineFailure, tablecontent4);
+      }
+      document.getElementById("AllergiesUploadTemplateTests").innerHTML = table;
+
     });
 });
 
@@ -455,6 +672,30 @@ $("#AllergiesCommitComposition").click(function(){
       var res = response11.compositionUid;
       compositionUid = res; 
       var actionT = response11.action;
+      var test1 = false;
+      var test2 = false;
+      var table;
+      var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>composition ID exists</td>";    
+      var tablecontent2 = "</tr><tr><td>action is commit</td>";
+      var tablecontent3="</tr></tbody></table>";
+      if (response11.hasOwnProperty('compositionUid')) {
+        test1 = true;
+      }
+      if(response11.action == 'CREATE'){
+        test2=true;
+      }
+      if(test1){
+        table = tablecontent1.concat(lineSuccess);
+      }else{
+        table = tablecontent1.concat(lineFailure);
+      }
+      if(test2){
+          table = table.concat(tablecontent2, lineSuccess, tablecontent3);
+      }else{
+          table = table.concat(tablecontent2, lineFailure, tablecontent3);
+      }
+      document.getElementById("AllergiesCommitCompositionTests").innerHTML = table;
+
       document.getElementById("p49").innerHTML = compositionUid;
       document.getElementById("p51").innerHTML = actionT;
     });
@@ -476,6 +717,50 @@ $("#AllergiesReadComposition").click(function(){
     }
 
     $.ajax(settings12).done(function (response12) {
+        var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Composition Set of Information is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>TemplateID is included in the Data</td>";
+	    var tablecontent3="</tr><tr><td>Composition uid is in the Response</td>";
+	    var tablecontent4="</tr><tr><td>CompositionID remains the same</td>";
+	    var tablecontent5="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+		if (response12.hasOwnProperty('composition')) {
+        	test1 = true;
+      	}
+      	if (response12.hasOwnProperty('templateId')) {
+        	test2 = true;
+      	}
+      	if(response12.composition.hasOwnProperty('adverse_reaction_list/_uid')){
+      		test3=true;
+      	}
+      	if(compositionUid==response12.composition['adverse_reaction_list/_uid']){
+      		test4=true;
+    	}
+    	var table;
+	    if(test1){
+	      table = tablecontent1.concat(lineSuccess);
+	    }else{
+	      table = tablecontent1.concat(lineFailure);
+	    }
+	    if(test2){
+	        table = table.concat(tablecontent2, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent2, lineFailure);
+	    }
+	    if(test3){
+	        table = table.concat(tablecontent3, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent3, lineFailure);
+	    }
+	    if(test4){
+	    	table = table.concat(tablecontent4, lineSuccess, tablecontent5);
+	    }else{
+	    	table = table.concat(tablecontent4, lineFailure, tablecontent5);
+	    }
+      document.getElementById("AllergiesReadCompositionTests").innerHTML = table;
+	
       console.log(response12);
       var res = response12.composition;
       var res2 = res['adverse_reaction_list/_uid'];
@@ -501,6 +786,40 @@ $("#AllergiesDeleteComposition").click(function(){
       }
 
     $.ajax(settings13).done(function (response13) {
+        var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Composition ID exists in the response</td>";    
+	    var tablecontent2 = "</tr><tr><td>Action is Delete</td>";
+	    var tablecontent3="</tr><tr><td>CompositionID remains the same</td>";
+	    var tablecontent4="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var table;
+		if (response13.hasOwnProperty('compositionUid')) {
+        	test1 = true;
+      	}
+	    if(response13.action === 'DELETED'){
+	        test2=true;
+      	}
+      	if(compositionUid==response13.compositionUid){
+      		test3=true;
+    	}
+    	if(test1){
+	      table = tablecontent1.concat(lineSuccess);
+	    }else{
+	      table = tablecontent1.concat(lineFailure);
+	    }
+	    if(test2){
+	        table = table.concat(tablecontent2, lineSuccess);
+	    }else{
+	        table = table.concat(tablecontent2, lineFailure);
+	    }
+	    if(test3){
+	        table = table.concat(tablecontent3, lineSuccess, tablecontent4);
+	    }else{
+	        table = table.concat(tablecontent3, lineFailure, tablecontent4);
+	    }
+	    document.getElementById("AllergiesDeleteCompositionTests").innerHTML = table;
+	
       console.log(response13);
       var res = response13.compositionUid;
       compositionUid = res; 
@@ -530,12 +849,69 @@ $("#AllergiesQueryPatientCompositions").click(function(){
     }
 
     $.ajax(settings14).done(function (response14) {
+    	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Result Set is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>The resultSet contains compositions for this EHR ID</td>";
+	    var tablecontent3="</tr><tr><td>All compositions in result Set contain uid and author/patient Name</td>";
+	    var tablecontent4="</tr><tr><td>The uid and author/patient Name of all the compositions are not null</td>";
+	    var tablecontent5="</tr><tr><td>The resultSet is empty</td>";	    
+	    var tablecontent6="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+	    var test5=false;
+	    var table;
+		if (response14.hasOwnProperty('resultSet')) {
+        	test1 = true;
+        	table = tablecontent1.concat(lineSuccess);
+      	}else{
+      		table = tablecontent1.concat(lineFailure);
+      	}
+      	if (test1){
+			var le = Object.keys(response14.resultSet).length;
+			if(le>0){
+				test2 = true;
+				table = table.concat(tablecontent2, lineSuccess);
+				var i=0;
+			    var checkAll = true;
+			    var nullVars = true;
+			    while(i<le){
+			        var obj = response14.resultSet[i];
+			        if((!(obj.hasOwnProperty('uid')))||(!(obj.hasOwnProperty('author')))){
+			            checkAll = false;    
+			        }else{
+			            if ((obj.uid == null)||(obj.author==null)){
+			                nullVars = false;
+			            }
+			        }
+			        i++;
+			    }
+			    if(checkAll){
+			    	test3=true;
+			    	table = table.concat(tablecontent3, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent3, lineFailure);
+			    }
+			    if(nullVars){
+			    	test4=true;
+			    	table = table.concat(tablecontent4, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent4, lineFailure);			    	
+			    }
+
+			}else{
+				test5=true;
+				table = table.concat(tablecontent5, lineSuccess);
+			}
+			      document.getElementById("p64").innerHTML = le;
+		}
+		table = table.concat(tablecontent6);
+		document.getElementById("AllergiesQueryPatientCompositionsTests").innerHTML = table;
+
       console.log(response14);
       var res = response14.resultSet[0].uid;
       var patientName = response14.resultSet[0].author;
-      document.getElementById("p64").innerHTML = res;
       document.getElementById("p66").innerHTML = patientName;
-
     });
 });
 $("#AllergiesQueryAllCompositions").click(function(){
@@ -558,11 +934,67 @@ $("#AllergiesQueryAllCompositions").click(function(){
     }
 
     $.ajax(settings15).done(function (response15) {
+    	var tablecontent1 = "<table><tbody><tr><td><b>Tests</b></td></tr><tr><td>Result Set is included in the Data</td>";    
+	    var tablecontent2 = "</tr><tr><td>The resultSet contains compositions for this EHR ID</td>";
+	    var tablecontent3="</tr><tr><td>All compositions in result Set contain uid and author/patient Name</td>";
+	    var tablecontent4="</tr><tr><td>The uid and author/patient Name of all the compositions are not null</td>";
+	    var tablecontent5="</tr><tr><td>The resultSet is empty</td>";	    
+	    var tablecontent6="</tr></tbody></table>";
+	    var test1=false; 
+	    var test2=false;
+	    var test3=false;
+	    var test4=false;
+	    var test5=false;
+	    var table;
+		if (response15.hasOwnProperty('resultSet')) {
+        	test1 = true;
+        	table = tablecontent1.concat(lineSuccess);
+      	}else{
+      		table = tablecontent1.concat(lineFailure);
+      	}
+      	if (test1){
+			var le = Object.keys(response15.resultSet).length;
+			if(le>0){
+				test2 = true;
+				table = table.concat(tablecontent2, lineSuccess);
+				var i=0;
+			    var checkAll = true;
+			    var nullVars = true;
+			    while(i<le){
+			        var obj = response15.resultSet[i];
+			        if((!(obj.hasOwnProperty('uid')))||(!(obj.hasOwnProperty('author')))){
+			            checkAll = false;    
+			        }else{
+			            if ((obj.uid == null)||(obj.author==null)){
+			                nullVars = false;
+			            }
+			        }
+			        i++;
+			    }
+			    if(checkAll){
+			    	test3=true;
+			    	table = table.concat(tablecontent3, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent3, lineFailure);
+			    }
+			    if(nullVars){
+			    	test4=true;
+			    	table = table.concat(tablecontent4, lineSuccess);
+			    }else{
+			    	table = table.concat(tablecontent4, lineFailure);			    	
+			    }
+
+			}else{
+				test5=true;
+				table = table.concat(tablecontent5, lineSuccess);
+			}
+			      document.getElementById("p69").innerHTML = le;
+		}
+		table = table.concat(tablecontent6);
+		document.getElementById("AllergiesQueryAllCompositionsTests").innerHTML = table;
+
+
       console.log(response15);
-      var res = response15.resultSet[0].uid;
-      var patientName = response15.resultSet[0].author;
-      document.getElementById("p69").innerHTML = res;
-      document.getElementById("p71").innerHTML = patientName;
 
     });
 });
